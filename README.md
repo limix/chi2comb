@@ -1,10 +1,8 @@
-# bgen
+# chi2comb
 
-[![Travis](https://img.shields.io/travis/limix/bgen.svg?style=flat-square&label=linux%20%2F%20macos%20build)](https://travis-ci.org/limix/bgen) [![AppVeyor](https://img.shields.io/appveyor/ci/Horta/bgen.svg?style=flat-square&label=windows%20build)](https://ci.appveyor.com/project/Horta/bgen)
+[![Travis](https://img.shields.io/travis/limix/chi2comb.svg?style=flat-square&label=linux%20%2F%20macos%20build)](https://travis-ci.org/limix/chi2comb) [![AppVeyor](https://img.shields.io/appveyor/ci/Horta/chi2comb.svg?style=flat-square&label=windows%20build)](https://ci.appveyor.com/project/Horta/chi2comb)
 
-A [BGEN file format](http://www.well.ox.ac.uk/~gav/bgen_format/) reader.
-
-It fully supports the BGEN format specifications 1.2 and 1.3.
+Bla bla
 
 ## Requirements
 
