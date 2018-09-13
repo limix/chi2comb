@@ -1,4 +1,4 @@
-# limix cmake module (1.0.3)
+# limix cmake module (1.0.4)
 #
 # Common configuration and handy functions for limix projects.
 #
@@ -127,9 +127,9 @@ function(limix_add_library NAME VERSION SRCS HDRS LIBS)
 endfunction(limix_add_library)
 
 macro(limix_add_test NAME LIBRARY SOURCES)
-  add_executable(${NAME} ${SOURCES})
-  target_link_libraries(${NAME} ${LIBRARY})
-  add_test(test_${NAME} ${NAME} -E environment)
+  add_executable(test_${NAME} ${SOURCES})
+  target_link_libraries(test_${NAME} ${LIBRARY})
+  add_test(test_${NAME} test_${NAME} -E environment)
   file(TO_CMAKE_PATH "$ENV{PATH}" MYPATH)
 
   list(APPEND MYPATH ${CMAKE_BINARY_DIR})
