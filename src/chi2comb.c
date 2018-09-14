@@ -287,8 +287,9 @@ l:
         return pow(2.0, (sum1 / 4.0)) / (pi * square(axl));
 }
 
-void qfc(double *lb1, double *nc1, int *n1, int *r1, double *sigma, double *c1,
-         int *lim1, double *acc, double *trace, int *ifault, double *res)
+CHI2COMB_API void qfc(double *lb1, double *nc1, int *n1, int *r1, double *sigma,
+                      double *c1, int *lim1, double *acc, double *trace, int *ifault,
+                      double *res)
 
 /*  distribution function of a linear combination of non-central
    chi-squared random variables :
