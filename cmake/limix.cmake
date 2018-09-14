@@ -108,6 +108,10 @@ function(limix_require_cmath_library)
   include(CheckSymbolExists)
 
   set(LIMIX_CMAKE_CMATH_LIBRARY "" PARENT_SCOPE)
+  if (WIN32)
+    return()
+  endif()
+
   CHECK_SYMBOL_EXISTS(pow math.h HAVE_EXP)
   if(NOT HAVE_EXP)
     unset(HAVE_EXP)
