@@ -9,6 +9,8 @@ set(LIMIX_CMAKE_ENVIRONMENT FALSE)
 
 limix_process_default_dirs()
 
-limix_add_library(${PROJECT_NAME} ${PROJECT_VERSION} "${SOURCES}" "${HEADERS}" "")
+limix_define_cmath_library()
+limix_add_library(${PROJECT_NAME} ${PROJECT_VERSION} "${SOURCES}" "${HEADERS}"
+                  "${LIMIX_CMAKE_CMATH_LIBRARY}")
 
 add_subdirectory(test)
