@@ -666,39 +666,6 @@ static LONG CALLBACK test_exception_filter__(EXCEPTION_POINTERS *ptrs) {
 }
 #endif
 
-static void test_help__(void) {
-    printf("Usage: %s [options] [test...]\n", test_argv0__);
-    printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
-    printf(
-        "tests in the suite but those listed.  By default, if no tests are specified\n");
-    printf("on the command line, all unit tests in the suite are run.\n");
-    printf("\n");
-    printf("Options:\n");
-    printf("  -s, --skip            Execute all unit tests but the listed ones\n");
-    printf(
-        "      --exec=WHEN       If supported, execute unit tests as child processes\n");
-    printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
-    printf("  -E, --no-exec         Same as --exec=never\n");
-    printf("      --no-summary      Suppress printing of test results summary\n");
-    printf("  -l, --list            List unit tests in the suite and exit\n");
-    printf("  -v, --verbose         Enable more verbose output\n");
-    printf("      --verbose=LEVEL   Set verbose level to LEVEL:\n");
-    printf("                          0 ... Be silent\n");
-    printf("                          1 ... Output one line per test (and summary)\n");
-    printf("                          2 ... As 1 and failed conditions (this is "
-           "default)\n");
-    printf("                          3 ... As 1 and all conditions (and extended "
-           "summary)\n");
-    printf("      --color=WHEN      Enable colorized output\n");
-    printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
-    printf("  -h, --help            Display this help and exit\n");
-
-    if (test_list_size__ < 16) {
-        printf("\n");
-        test_list_names__();
-    }
-}
-
 #ifdef ACUTEST_LINUX__
 static int test_is_tracer_present__(void) {
     char buf[256 + 32 + 1];
@@ -767,53 +734,6 @@ int main(int argc, char **argv) {
         exit(2);
     }
     memset((void *)test_flags__, 0, sizeof(char) * test_list_size__);
-
-    /* Parse options */
-    for (i = 1; i < argc; i++) {
-        if (seen_double_dash || argv[i][0] != '-') {
-            if (test_lookup__(argv[i]) == 0) {
-                fprintf(stderr, "%s: Unrecognized unit test '%s'\n", argv[0], argv[i]);
-                fprintf(stderr, "Try '%s --list' for list of unit tests.\n", argv[0]);
-                exit(2);
-            }
-        } else if (strcmp(argv[i], "--") == 0) {
-            seen_double_dash = 1;
-        } else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
-            test_help__();
-            exit(0);
-        } else if (strcmp(argv[i], "--verbose") == 0 || strcmp(argv[i], "-v") == 0) {
-            test_verbose_level__++;
-        } else if (strncmp(argv[i], "--verbose=", 10) == 0) {
-            test_verbose_level__ = atoi(argv[i] + 10);
-        } else if (strcmp(argv[i], "--color=auto") == 0) {
-            /* noop (set from above) */
-        } else if (strcmp(argv[i], "--color=always") == 0 ||
-                   strcmp(argv[i], "--color") == 0) {
-            test_colorize__ = 1;
-        } else if (strcmp(argv[i], "--color=never") == 0 ||
-                   strcmp(argv[i], "--no-color") == 0) {
-            test_colorize__ = 0;
-        } else if (strcmp(argv[i], "--skip") == 0 || strcmp(argv[i], "-s") == 0) {
-            test_skip_mode__ = 1;
-        } else if (strcmp(argv[i], "--exec=auto") == 0) {
-            /* noop (set from above) */
-        } else if (strcmp(argv[i], "--exec=always") == 0 ||
-                   strcmp(argv[i], "--exec") == 0) {
-            test_no_exec__ = 0;
-        } else if (strcmp(argv[i], "--exec=never") == 0 ||
-                   strcmp(argv[i], "--no-exec") == 0 || strcmp(argv[i], "-E") == 0) {
-            test_no_exec__ = 1;
-        } else if (strcmp(argv[i], "--no-summary") == 0) {
-            test_no_summary__ = 1;
-        } else if (strcmp(argv[i], "--list") == 0 || strcmp(argv[i], "-l") == 0) {
-            test_list_names__();
-            exit(0);
-        } else {
-            fprintf(stderr, "%s: Unrecognized option '%s'\n", argv[0], argv[i]);
-            fprintf(stderr, "Try '%s --help' for more information.\n", argv[0]);
-            exit(2);
-        }
-    }
 
 #if defined(ACUTEST_WIN__)
     SetUnhandledExceptionFilter(test_exception_filter__);
