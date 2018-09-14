@@ -5,6 +5,7 @@ project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES C)
 limix_config()
 
 set(CMAKE_C_STANDARD 11)
+set(LIMIX_CMAKE_ENVIRONMENT FALSE)
 
 limix_process_default_dirs()
 
