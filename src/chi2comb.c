@@ -1,5 +1,6 @@
 #define CHI2COMB_API_EXPORTS
 
+#include "chi2comb.h"
 #include <float.h>
 #include <math.h>
 #include <setjmp.h>
