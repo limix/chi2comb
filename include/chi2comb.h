@@ -1,10 +1,10 @@
 #ifndef CHI2COMB_CHI2COMB_H
 #define CHI2COMB_CHI2COMB_H
 
-#define CHI2COMB_VERSION "0.0.1"
+#define CHI2COMB_VERSION "0.0.2"
 #define CHI2COMB_VERSION_MAJOR 0
 #define CHI2COMB_VERSION_MINOR 0
-#define CHI2COMB_VERSION_PATCH 1
+#define CHI2COMB_VERSION_PATCH 2
 
 void qfc(double *lb1, double *nc1, int *n1, int *r1, double *sigma, double *c1,
          int *lim1, double *acc, double *trace, int *ifault, double *res);
