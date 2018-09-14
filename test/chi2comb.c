@@ -10,7 +10,7 @@
 void test_chi2comb(void) {
 
     double coefs[] = {0.4, 1.1};
-    double ncentrals[] = {1.3, 2.9};
+    double noncentrals[] = {1.3, 2.9};
     int dofs[] = {1, 3};
     int ncoefs = 2;
     double coef1 = 0.41;
@@ -21,11 +21,58 @@ void test_chi2comb(void) {
     int fault = 0;
     double res = 0.0;
 
-    qfc(coefs, ncentrals, dofs, &ncoefs, &coef1, &dof_eval, &lim, &acc, info, &fault,
-        &res);
+    chi2comb_cdf(coefs, noncentrals, dofs, &ncoefs, &coef1, &dof_eval, &lim, &acc, info,
+                 &fault, &res);
     res = 1 - res;
 
     TEST_CHECK(fabs(res - 0.9183206009070191) < EPSILON);
 }
 
-TEST_LIST = {{"test_chi2comb", test_chi2comb}, {NULL, NULL}};
+void test_chi2comb_table(void) {
+
+    double coefs[] = {
+        6, 3, 1, 6, 3, 1, 6, 3, 1, 6, 3, 1,  6,  3, 1, 6,  3,  1, 6, 3,  1,
+        6, 3, 1, 6, 3, 1, 7, 3, 7, 3, 7, 3,  7,  3, 7, 3,  7,  3, 7, 3,  7,
+        3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, -7, -3, 7, 3, -7, -3, 7, 3, -7, -3,
+    };
+    int dofs[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 4, 2, 6,
+                  4, 2, 6, 4, 2, 6, 2, 6, 2, 6, 2, 1, 1, 1, 1, 1, 1, 6, 2, 1, 1, 6,
+                  2, 1, 1, 6, 2, 1, 1, 6, 2, 1, 1, 6, 2, 1, 1, 6, 2, 1, 1
+
+    };
+    int ncoefs[] = {3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4};
+    double noncentrals[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 6, 2, 6,
+                            2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6,
+                            2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2};
+    double coef1[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    double dof_eval[] = {1,   7,  20, 2,   20, 60,  10,  50,  120, 20, 100,
+                         200, 10, 60, 150, 70, 160, 260, -40, 40,  140};
+    int lim = 1000;
+    double acc = 1e-4;
+    double info[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    int fault = 0;
+    double res = 0.0;
+
+    double expected[] = {
+        0.054212946675253226303,  0.49355520181330159168, 0.8760272280402326972,
+        0.0064348332078802972234, 0.60020819879723130708, 0.98389684789412334975,
+        0.002697179606063082602,  0.56475302904079760502, 0.99122881453974709398,
+        0.0061246216052206481351, 0.5913392182262962038,  0.97791384613661402891,
+        0.045126148881611038988,  0.59243135753281106481, 0.97764841290122861395,
+        0.043679499423862400143,  0.58476547524879196605, 0.95377443935266215114,
+        0.078208009100773745459,  0.52210759195266853716, 0.96037034711779101226};
+
+    int offset = 0;
+    printf("\n");
+    for (int i = 0; i < 21; ++i) {
+        chi2comb_cdf(coefs + offset, noncentrals + offset, dofs + offset, ncoefs + i,
+                     coef1 + i, dof_eval + i, &lim, &acc, info, &fault, &res);
+        TEST_CHECK(fabs(res - expected[i]) < EPSILON);
+        offset += *(ncoefs + i);
+    }
+}
+
+TEST_LIST = {{"test_chi2comb", test_chi2comb},
+             {"test_chi2comb_table", test_chi2comb_table},
+             {NULL, NULL}};

@@ -288,9 +288,9 @@ l:
         return pow(2.0, (sum1 / 4.0)) / (pi * square(axl));
 }
 
-CHI2COMB_API void qfc(double *lb1, double *nc1, int *n1, int *r1, double *sigma,
-                      double *c1, int *lim1, double *acc, double *trace, int *ifault,
-                      double *res)
+CHI2COMB_API void chi2comb_cdf(double *coefs, double *noncentrals, int *dofs,
+                               int *ncoefs, double *coef1, double *dof_eval, int *lim1,
+                               double *acc, double *trace, int *ifault, double *res)
 
 /*  distribution function of a linear combination of non-central
    chi-squared random variables :
@@ -300,7 +300,7 @@ input:
    nc[j]            non-centrality parameter
    n[j]             degrees of freedom
    j = 0, 2 ... r-1
-   sigma            coefficient of standard normal variable
+   coef1            coefficient of standard normal variable
    c                point at which df is to be evaluated
    lim              maximum number of terms in integration
    acc              maximum error
@@ -337,12 +337,12 @@ output:
         *ifault = 4;
         goto endofproc;
     }
-    r = r1[0];
+    r = ncoefs[0];
     lim = lim1[0];
-    c = c1[0];
-    n = n1;
-    lb = lb1;
-    nc = nc1;
+    c = dof_eval[0];
+    n = dofs;
+    lb = coefs;
+    nc = noncentrals;
     for (j = 0; j < 7; j++)
         trace[j] = 0.0;
     *ifault = 0;
@@ -362,7 +362,7 @@ output:
 
     /* find mean, sd, max and min of lb,
        check that parameter values are valid */
-    sigsq = square(sigma[0]);
+    sigsq = square(coef1[0]);
     sd = sigsq;
     lmax = 0.0;
     lmin = 0.0;
@@ -386,7 +386,7 @@ output:
         qfval = (c > 0.0) ? 1.0 : 0.0;
         goto endofproc;
     }
-    if (lmin == 0.0 && lmax == 0.0 && sigma[0] == 0.0) {
+    if (lmin == 0.0 && lmax == 0.0 && coef1[0] == 0.0) {
         *ifault = 3;
         goto endofproc;
     }

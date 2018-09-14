@@ -1,4 +1,4 @@
-# limix cmake module (1.0.5)
+# limix cmake module (1.0.6)
 #
 # Common configuration and handy functions for limix projects.
 #

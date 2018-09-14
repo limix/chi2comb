@@ -20,9 +20,9 @@ extern "C" {
 #define CHI2COMB_API
 #endif
 
-CHI2COMB_API void qfc(double *lb1, double *nc1, int *n1, int *r1, double *sigma,
-                      double *c1, int *lim1, double *acc, double *trace, int *ifault,
-                      double *res);
+CHI2COMB_API void chi2comb_cdf(double *coefs, double *noncentrals, int *dofs,
+                               int *ncoefs, double *coef1, double *dof_eval, int *lim1,
+                               double *acc, double *trace, int *ifault, double *res);
 
 #ifdef __cplusplus
 }
