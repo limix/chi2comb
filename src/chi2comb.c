@@ -298,7 +298,7 @@ void chi2comb_info_zeros(struct chi2comb_info *info) {
     info->truc = 0.0;
 }
 
-CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, double gcoef,
+CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef,
                               int lim, double abstol, struct chi2comb_info *info,
                               double *result)
 

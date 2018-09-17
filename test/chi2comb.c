@@ -21,8 +21,8 @@ void test_chi2comb(void) {
     int fault = 0;
     double res = 0.0;
 
-    struct chi2comb_chisquares chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
-                                        (int[2]){1, 3}, 2};
+    struct chi2comb_chisquareds chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
+                                         (int[2]){1, 3}, 2};
 
     fault = chi2comb_cdf(q, &chi2s, gcoef, lim, abstol, &info, &res);
     res = 1 - res;
@@ -66,7 +66,7 @@ void test_chi2comb_table(void) {
         0.078208009100773745459,  0.52210759195266853716, 0.96037034711779101226};
 
     int offset = 0;
-    struct chi2comb_chisquares chi2s;
+    struct chi2comb_chisquareds chi2s;
     for (int i = 0; i < 21; ++i) {
         chi2s.coefs = coefs + offset;
         chi2s.dofs = dofs + offset;

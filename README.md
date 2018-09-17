@@ -51,8 +51,8 @@ This library exports a single function:
  * ----------
  * q : double
  *     Value point at which distribution function is to be evaluated.
- * chi2s : struct chi2comb_chisquares
- *     Chi-square distributions.
+ * chi2s : struct chi2comb_chisquareds
+ *     Chi-squared distributions.
  * gcoef : double
  *     Coefficient of the standard Normal distribution.
  * lim : int
@@ -74,7 +74,7 @@ This library exports a single function:
  *     4: unable to locate integration parameters
  *     5: out of memory
  */
-CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, double gcoef,
+CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef,
                               int lim, double abstol, struct chi2comb_info *info,
                               double *result);
 ```
@@ -82,8 +82,8 @@ CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, doubl
 The structure
 
 ```C
-struct chi2comb_chisquares {
-    const double *coefs;  /* chi-square coefficients */
+struct chi2comb_chisquareds {
+    const double *coefs;  /* chi-squared coefficients */
     const double *ncents; /* noncentrality parameters */
     const int *dofs;      /* degree of freedoms */
     int n;                /* number of terms */

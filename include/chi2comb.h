@@ -1,10 +1,10 @@
 #ifndef CHI2COMB_CHI2COMB_H
 #define CHI2COMB_CHI2COMB_H
 
-#define CHI2COMB_VERSION "0.0.2"
+#define CHI2COMB_VERSION "0.0.3"
 #define CHI2COMB_VERSION_MAJOR 0
 #define CHI2COMB_VERSION_MINOR 0
-#define CHI2COMB_VERSION_PATCH 2
+#define CHI2COMB_VERSION_PATCH 3
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,8 +20,8 @@ extern "C" {
 #define CHI2COMB_API
 #endif
 
-struct chi2comb_chisquares {
-    const double *coefs;  /* chi-square coefficients */
+struct chi2comb_chisquareds {
+    const double *coefs;  /* chi-squared coefficients */
     const double *ncents; /* noncentrality parameters */
     const int *dofs;      /* degree of freedoms */
     int n;                /* number of terms */
@@ -48,8 +48,8 @@ struct chi2comb_info {
  * ----------
  * q : double
  *     Value point at which distribution function is to be evaluated.
- * chi2s : struct chi2comb_chisquares
- *     Chi-square distributions.
+ * chi2s : struct chi2comb_chisquareds
+ *     Chi-squared distributions.
  * gcoef : double
  *     Coefficient of the standard Normal distribution.
  * lim : int
@@ -71,7 +71,7 @@ struct chi2comb_info {
  *     4: unable to locate integration parameters
  *     5: out of memory
  */
-CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, double gcoef,
+CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef,
                               int lim, double abstol, struct chi2comb_info *info,
                               double *result);
 
