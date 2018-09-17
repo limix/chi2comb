@@ -28,13 +28,13 @@ struct chi2comb_chisquares {
 };
 
 struct chi2comb_info {
-    double atol;     /* absolute error tolerance */
-    int niterms;     /* total number of integration terms */
-    int nints;       /* number of integrations */
-    double interval; /* integration interval in final integration */
-    double truc;     /* truncation point in initial integration */
-    double sd;       /* s.d. of initial convergence factor */
-    int ncycles;     /* cycles to locate integration parameters */
+    double emag; /* error magnitude */
+    int niterms; /* total number of integration terms */
+    int nints;   /* number of integrations */
+    double intv; /* integration interval in final integration */
+    double truc; /* truncation point in initial integration */
+    double sd;   /* s.d. of initial convergence factor */
+    int ncycles; /* cycles to locate integration parameters */
 };
 
 /** Cumulative distribution function of Chi-Square distribution combination.
@@ -50,8 +50,8 @@ struct chi2comb_info {
  *     5: out of memory
  */
 CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double *coef1, int *lim1, double *acc, double *trace,
-                              double *res);
+                              double *coef1, int *lim1, double abstol,
+                              struct chi2comb_info *info, double *result);
 
 #ifdef __cplusplus
 }

@@ -288,9 +288,19 @@ l:
         return pow(2.0, (sum1 / 4.0)) / (pi * square(axl));
 }
 
+void chi2comb_info_zeros(struct chi2comb_info *info) {
+    info->emag = 0.0;
+    info->intv = 0.0;
+    info->ncycles = 0;
+    info->nints = 0;
+    info->niterms = 0;
+    info->sd = 0.0;
+    info->truc = 0.0;
+}
+
 CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double *coef1, int *lim1, double *acc, double *trace,
-                              double *res)
+                              double *coef1, int *lim1, double abstol,
+                              struct chi2comb_info *info, double *result)
 
 /*  distribution function of a linear combination of non-central
    chi-squared random variables :
@@ -343,14 +353,15 @@ output:
     n = (int *)chi2s->dofs;
     lb = (double *)chi2s->coefs;
     nc = (double *)chi2s->ncents;
-    for (j = 0; j < 7; j++)
-        trace[j] = 0.0;
+    chi2comb_info_zeros(info);
+    // for (j = 0; j < 7; j++)
+    //     trace[j] = 0.0;
     ifault = 0;
     count = 0;
     intl = 0.0;
     ersm = 0.0;
     qfval = -1.0;
-    acc1 = acc[0];
+    acc1 = abstol;
     ndtsrt = TRUE;
     fail = FALSE;
     xlim = (double)lim;
@@ -407,10 +418,12 @@ output:
         else if (truncation(utx, tausq) < .2 * acc1) {
             sigsq = sigsq + tausq;
             findu(&utx, .25 * acc1);
-            trace[5] = sqrt(tausq);
+            // trace[5] = sqrt(tausq);
+            info->sd = sqrt(tausq);
         }
     }
-    trace[4] = utx;
+    // trace[4] = utx;
+    info->truc = utx;
     acc1 = 0.5 * acc1;
 
     /* find RANGE of distribution, quit if outside this */
@@ -451,8 +464,10 @@ l1:
         integrate(ntm, intv1, tausq, FALSE);
         xlim = xlim - xntm;
         sigsq = sigsq + tausq;
-        trace[2] = trace[2] + 1;
-        trace[1] = trace[1] + ntm + 1;
+        // trace[2] = trace[2] + 1;
+        // trace[1] = trace[1] + ntm + 1;
+        info->nints = info->nints + 1;
+        info->niterms = info->niterms + ntm + 1;
         /* find truncation point with new convergence factor */
         findu(&utx, .25 * acc1);
         acc1 = 0.75 * acc1;
@@ -461,22 +476,26 @@ l1:
 
     /* main integration */
 l2:
-    trace[3] = intv;
+    // trace[3] = intv;
+    info->intv = intv;
     if (xnt > xlim) {
         ifault = 1;
         goto endofproc;
     }
     nt = (int)floor(xnt + 0.5);
     integrate(nt, intv, 0.0, TRUE);
-    trace[2] = trace[2] + 1;
-    trace[1] = trace[1] + nt + 1;
+    // trace[2] = trace[2] + 1;
+    // trace[1] = trace[1] + nt + 1;
+    info->nints = info->nints + 1;
+    info->niterms = info->niterms + nt + 1;
     qfval = 0.5 - intl;
-    trace[0] = ersm;
+    // trace[0] = ersm;
+    info->emag = ersm;
 
     /* test whether round-off error could be significant
        allow for radix 8 or 16 machines */
     up = ersm;
-    x = up + acc[0] / 10.0;
+    x = up + abstol / 10.0;
     for (j = 0; j < 4; j++) {
         if (rats[j] * x == rats[j] * up)
             ifault = 2;
@@ -484,7 +503,8 @@ l2:
 
 endofproc:
     free((char *)th);
-    trace[6] = (double)count;
-    res[0] = qfval;
+    // trace[6] = (double)count;
+    info->ncycles = count;
+    *result = qfval;
     return ifault;
 }
