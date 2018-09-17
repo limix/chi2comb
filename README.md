@@ -40,7 +40,12 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.github
 This library exports a single function:
 
 ```C
-/** Cumulative distribution function of Chi-Square distribution combination.
+/** Cumulative distribution function of non-central chi-squared distributions.
+ *
+ * Computes P[Q<q] where Q=λ₁X₁ + ... + λₙXₙ + σ X₀. Xᵢ is an independent random variable
+ * having a non-central chi-squared distribution with nᵢ degrees of freedom and
+ * non-centrality parameter δ²ⱼ. X₀ is an independent random variable having a standard
+ * Gaussian distribution.
  *
  * Parameters
  * ----------
