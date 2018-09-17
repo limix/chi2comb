@@ -20,9 +20,38 @@ extern "C" {
 #define CHI2COMB_API
 #endif
 
-CHI2COMB_API void chi2comb_cdf(double *coefs, double *noncentrals, int *dofs,
-                               int *ncoefs, double *coef1, double *dof_eval, int *lim1,
-                               double *acc, double *trace, int *ifault, double *res);
+struct chi2comb_chisquares {
+    const double *coefs;  /* chi-square coefficients */
+    const double *ncents; /* noncentrality parameters */
+    const int *dofs;      /* degree of freedoms */
+    int n;                /* number of terms */
+};
+
+struct chi2comb_info {
+    double atol;     /* absolute error tolerance */
+    int niterms;     /* total number of integration terms */
+    int nints;       /* number of integrations */
+    double interval; /* integration interval in final integration */
+    double truc;     /* truncation point in initial integration */
+    double sd;       /* s.d. of initial convergence factor */
+    int ncycles;     /* cycles to locate integration parameters */
+};
+
+/** Cumulative distribution function of Chi-Square distribution combination.
+ *
+ * Returns
+ * -------
+ * error : int
+ *     0: completed successfully
+ *     1: required accuracy not achieved
+ *     2: round-off error possibly significant
+ *     3: invalid parameters
+ *     4: unable to locate integration parameters
+ *     5: out of memory
+ */
+CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
+                              double *coef1, int *lim1, double *acc, double *trace,
+                              double *res);
 
 #ifdef __cplusplus
 }

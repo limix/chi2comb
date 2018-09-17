@@ -14,15 +14,24 @@ void test_chi2comb(void) {
     int dofs[] = {1, 3};
     int ncoefs = 2;
     double coef1 = 0.41;
-    double dof_eval = 2.0;
+    double dof = 2.0;
     int lim = 1000;
     double acc = 1e-16;
     double info[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     int fault = 0;
     double res = 0.0;
 
-    chi2comb_cdf(coefs, noncentrals, dofs, &ncoefs, &coef1, &dof_eval, &lim, &acc, info,
-                 &fault, &res);
+    // struct chi2comb_chisquares {
+    //     double coefs[2], ncents[2];
+    //     int dofs[2];
+    //     int n;
+    // } chi2s = {{0.4, 1.1}, {1.3, 2.9}, {1, 3}, 2};
+
+    struct chi2comb_chisquares chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
+                                        (int[2]){1, 3}, 2};
+
+    // chi2comb_cdf(dof, chi2s);
+    fault = chi2comb_cdf(dof, &chi2s, &coef1, &lim, &acc, info, &res);
     res = 1 - res;
 
     TEST_CHECK(fabs(res - 0.9183206009070191) < EPSILON);
@@ -64,10 +73,16 @@ void test_chi2comb_table(void) {
         0.078208009100773745459,  0.52210759195266853716, 0.96037034711779101226};
 
     int offset = 0;
-    printf("\n");
+    // struct chi2comb_chisquares chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
+    //                                     (int[2]){1, 3}, 2};
+    struct chi2comb_chisquares chi2s;
     for (int i = 0; i < 21; ++i) {
-        chi2comb_cdf(coefs + offset, noncentrals + offset, dofs + offset, ncoefs + i,
-                     coef1 + i, dof_eval + i, &lim, &acc, info, &fault, &res);
+        chi2s.coefs = coefs + offset;
+        chi2s.dofs = dofs + offset;
+        chi2s.ncents = noncentrals + offset;
+        chi2s.n = ncoefs[i];
+        fault = chi2comb_cdf(dof_eval[i], &chi2s, coef1 + i, &lim, &acc, info, &res);
+        TEST_CHECK(fault == 0);
         TEST_CHECK(fabs(res - expected[i]) < EPSILON);
         offset += *(ncoefs + i);
     }

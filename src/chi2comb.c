@@ -288,9 +288,9 @@ l:
         return pow(2.0, (sum1 / 4.0)) / (pi * square(axl));
 }
 
-CHI2COMB_API void chi2comb_cdf(double *coefs, double *noncentrals, int *dofs,
-                               int *ncoefs, double *coef1, double *dof_eval, int *lim1,
-                               double *acc, double *trace, int *ifault, double *res)
+CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
+                              double *coef1, int *lim1, double *acc, double *trace,
+                              double *res)
 
 /*  distribution function of a linear combination of non-central
    chi-squared random variables :
@@ -321,7 +321,7 @@ output:
    trace[6]         cycles to locate integration parameters     */
 
 {
-    int j, nj, nt, ntm;
+    int j, nj, nt, ntm, ifault;
     double acc1, almx, xlim, xnt, xntm;
     double utx, tausq, sd, intv, intv1, x, up, un, d1, d2, lj, ncj;
     extern double sigsq, lmax, lmin, mean;
@@ -334,18 +334,18 @@ output:
     static int rats[] = {1, 2, 4, 8};
 
     if (setjmp(env) != 0) {
-        *ifault = 4;
+        ifault = 4;
         goto endofproc;
     }
-    r = ncoefs[0];
+    r = chi2s->n;
     lim = lim1[0];
-    c = dof_eval[0];
-    n = dofs;
-    lb = coefs;
-    nc = noncentrals;
+    c = dof;
+    n = (int *)chi2s->dofs;
+    lb = (double *)chi2s->coefs;
+    nc = (double *)chi2s->ncents;
     for (j = 0; j < 7; j++)
         trace[j] = 0.0;
-    *ifault = 0;
+    ifault = 0;
     count = 0;
     intl = 0.0;
     ersm = 0.0;
@@ -356,7 +356,7 @@ output:
     xlim = (double)lim;
     th = (int *)malloc(r * (sizeof(int)));
     if (!th) {
-        *ifault = 5;
+        ifault = 5;
         goto endofproc;
     }
 
@@ -372,7 +372,7 @@ output:
         lj = lb[j];
         ncj = nc[j];
         if (nj < 0 || ncj < 0.0) {
-            *ifault = 3;
+            ifault = 3;
             goto endofproc;
         }
         sd = sd + square(lj) * ((double)(2 * nj) + 4.0 * ncj);
@@ -387,7 +387,7 @@ output:
         goto endofproc;
     }
     if (lmin == 0.0 && lmax == 0.0 && coef1[0] == 0.0) {
-        *ifault = 3;
+        ifault = 3;
         goto endofproc;
     }
     sd = sqrt(sd);
@@ -434,7 +434,7 @@ l1:
     if (xnt > xntm * 1.5) {
         /* parameters for auxillary integration */
         if (xntm > xlim) {
-            *ifault = 1;
+            ifault = 1;
             goto endofproc;
         }
         ntm = (int)floor(xntm + 0.5);
@@ -463,7 +463,7 @@ l1:
 l2:
     trace[3] = intv;
     if (xnt > xlim) {
-        *ifault = 1;
+        ifault = 1;
         goto endofproc;
     }
     nt = (int)floor(xnt + 0.5);
@@ -479,12 +479,12 @@ l2:
     x = up + acc[0] / 10.0;
     for (j = 0; j < 4; j++) {
         if (rats[j] * x == rats[j] * up)
-            *ifault = 2;
+            ifault = 2;
     }
 
 endofproc:
     free((char *)th);
     trace[6] = (double)count;
     res[0] = qfval;
-    return;
+    return ifault;
 }
