@@ -39,6 +39,23 @@ struct chi2comb_info {
 
 /** Cumulative distribution function of Chi-Square distribution combination.
  *
+ * Parameters
+ * ----------
+ * q : double
+ *     Value point at which distribution function is to be evaluated.
+ * chi2s : struct chi2comb_chisquares
+ *     Chi-square distributions.
+ * gcoef : double
+ *     Coefficient of the standard Normal distribution.
+ * lim : int
+ *     Maximum number of integration terms.
+ * abstol : double
+ *     Absolute error tolerance.
+ * info : struct chi2comb_info*
+ *     Algorithm information.
+ * result : double *
+ *     Estimated c.d.f. evaluated at `q`.
+ *
  * Returns
  * -------
  * error : int
@@ -49,9 +66,9 @@ struct chi2comb_info {
  *     4: unable to locate integration parameters
  *     5: out of memory
  */
-CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double gcoef, int lim, double abstol,
-                              struct chi2comb_info *info, double *result);
+CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, double gcoef,
+                              int lim, double abstol, struct chi2comb_info *info,
+                              double *result);
 
 #ifdef __cplusplus
 }

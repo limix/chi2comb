@@ -14,24 +14,17 @@ void test_chi2comb(void) {
     int dofs[] = {1, 3};
     int ncoefs = 2;
     double gcoef = 0.41;
-    double dof = 2.0;
+    double q = 2.0;
     int lim = 1000;
     double abstol = 1e-16;
     struct chi2comb_info info;
     int fault = 0;
     double res = 0.0;
 
-    // struct chi2comb_chisquares {
-    //     double coefs[2], ncents[2];
-    //     int dofs[2];
-    //     int n;
-    // } chi2s = {{0.4, 1.1}, {1.3, 2.9}, {1, 3}, 2};
-
     struct chi2comb_chisquares chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
                                         (int[2]){1, 3}, 2};
 
-    // chi2comb_cdf(dof, chi2s);
-    fault = chi2comb_cdf(dof, &chi2s, gcoef, lim, abstol, &info, &res);
+    fault = chi2comb_cdf(q, &chi2s, gcoef, lim, abstol, &info, &res);
     res = 1 - res;
 
     TEST_CHECK(fabs(res - 0.9183206009070191) < EPSILON);
@@ -55,8 +48,8 @@ void test_chi2comb_table(void) {
                             2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6,
                             2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2};
     double gcoef[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    double dof_eval[] = {1,   7,  20, 2,   20, 60,  10,  50,  120, 20, 100,
-                         200, 10, 60, 150, 70, 160, 260, -40, 40,  140};
+    double q[] = {1,   7,  20, 2,   20, 60,  10,  50,  120, 20, 100,
+                  200, 10, 60, 150, 70, 160, 260, -40, 40,  140};
     int lim = 1000;
     double abstol = 1e-4;
     struct chi2comb_info info;
@@ -73,15 +66,13 @@ void test_chi2comb_table(void) {
         0.078208009100773745459,  0.52210759195266853716, 0.96037034711779101226};
 
     int offset = 0;
-    // struct chi2comb_chisquares chi2s = {(double[2]){0.4, 1.1}, (double[2]){1.3, 2.9},
-    //                                     (int[2]){1, 3}, 2};
     struct chi2comb_chisquares chi2s;
     for (int i = 0; i < 21; ++i) {
         chi2s.coefs = coefs + offset;
         chi2s.dofs = dofs + offset;
         chi2s.ncents = noncentrals + offset;
         chi2s.n = ncoefs[i];
-        fault = chi2comb_cdf(dof_eval[i], &chi2s, gcoef[i], lim, abstol, &info, &res);
+        fault = chi2comb_cdf(q[i], &chi2s, gcoef[i], lim, abstol, &info, &res);
         TEST_CHECK(fault == 0);
         TEST_CHECK(fabs(res - expected[i]) < EPSILON);
         offset += *(ncoefs + i);

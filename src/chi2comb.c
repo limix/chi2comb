@@ -298,37 +298,9 @@ void chi2comb_info_zeros(struct chi2comb_info *info) {
     info->truc = 0.0;
 }
 
-CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double gcoef, int lim, double abstol,
-                              struct chi2comb_info *info, double *result)
-
-/*  distribution function of a linear combination of non-central
-   chi-squared random variables :
-
-input:
-   lb[j]            coefficient of j-th chi-squared variable
-   nc[j]            non-centrality parameter
-   n[j]             degrees of freedom
-   j = 0, 2 ... r-1
-   coef1            coefficient of standard normal variable
-   c                point at which df is to be evaluated
-   lim              maximum number of terms in integration
-   acc              maximum error
-
-output:
-   ifault = 1       required accuracy NOT achieved
-            2       round-off error possibly significant
-            3       invalid parameters
-            4       unable to locate integration parameters
-            5       out of memory
-
-   trace[0]         absolute sum
-   trace[1]         total number of integration terms
-   trace[2]         number of integrations
-   trace[3]         integration interval in final integration
-   trace[4]         truncation point in initial integration
-   trace[5]         s.d. of initial convergence factor
-   trace[6]         cycles to locate integration parameters     */
+CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquares *chi2s, double gcoef,
+                              int lim, double abstol, struct chi2comb_info *info,
+                              double *result)
 
 {
     int j, nj, nt, ntm, ifault;
@@ -349,7 +321,7 @@ output:
     }
     r = chi2s->n;
     lim0 = lim;
-    c = dof;
+    c = q;
     n = (int *)chi2s->dofs;
     lb = (double *)chi2s->coefs;
     nc = (double *)chi2s->ncents;
@@ -471,7 +443,6 @@ l1:
 
     /* main integration */
 l2:
-    // trace[3] = intv;
     info->intv = intv;
     if (xnt > xlim) {
         ifault = 1;
