@@ -50,7 +50,7 @@ struct chi2comb_info {
  *     5: out of memory
  */
 CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double *coef1, int *lim1, double abstol,
+                              double gcoef, int lim, double abstol,
                               struct chi2comb_info *info, double *result);
 
 #ifdef __cplusplus

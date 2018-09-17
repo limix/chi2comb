@@ -15,7 +15,7 @@ typedef int BOOL;
 
 static double sigsq, lmax, lmin, mean, c;
 static double intl, ersm;
-static int count, r, lim;
+static int count, r, lim0;
 static BOOL ndtsrt, fail;
 static int *n, *th;
 static double *lb, *nc;
@@ -29,9 +29,9 @@ static double exp1(double x) /* to avoid underflows  */
 static void counter(void)
 /*  count number of calls to errbd, truncation, cfe */
 {
-    extern int count, lim;
+    extern int count, lim0;
     count = count + 1;
-    if (count > lim)
+    if (count > lim0)
         longjmp(env, 1);
 }
 
@@ -299,7 +299,7 @@ void chi2comb_info_zeros(struct chi2comb_info *info) {
 }
 
 CHI2COMB_API int chi2comb_cdf(double dof, struct chi2comb_chisquares *chi2s,
-                              double *coef1, int *lim1, double abstol,
+                              double gcoef, int lim, double abstol,
                               struct chi2comb_info *info, double *result)
 
 /*  distribution function of a linear combination of non-central
@@ -336,7 +336,7 @@ output:
     double utx, tausq, sd, intv, intv1, x, up, un, d1, d2, lj, ncj;
     extern double sigsq, lmax, lmin, mean;
     extern double intl, ersm;
-    extern int r, lim;
+    extern int r, lim0;
     extern double c;
     extern int *n, *th;
     extern double *lb, *nc;
@@ -348,14 +348,13 @@ output:
         goto endofproc;
     }
     r = chi2s->n;
-    lim = lim1[0];
+    lim0 = lim;
     c = dof;
     n = (int *)chi2s->dofs;
     lb = (double *)chi2s->coefs;
     nc = (double *)chi2s->ncents;
     chi2comb_info_zeros(info);
-    // for (j = 0; j < 7; j++)
-    //     trace[j] = 0.0;
+
     ifault = 0;
     count = 0;
     intl = 0.0;
@@ -364,7 +363,7 @@ output:
     acc1 = abstol;
     ndtsrt = TRUE;
     fail = FALSE;
-    xlim = (double)lim;
+    xlim = (double)lim0;
     th = (int *)malloc(r * (sizeof(int)));
     if (!th) {
         ifault = 5;
@@ -373,7 +372,7 @@ output:
 
     /* find mean, sd, max and min of lb,
        check that parameter values are valid */
-    sigsq = square(coef1[0]);
+    sigsq = square(gcoef);
     sd = sigsq;
     lmax = 0.0;
     lmin = 0.0;
@@ -397,7 +396,7 @@ output:
         qfval = (c > 0.0) ? 1.0 : 0.0;
         goto endofproc;
     }
-    if (lmin == 0.0 && lmax == 0.0 && coef1[0] == 0.0) {
+    if (lmin == 0.0 && lmax == 0.0 && gcoef == 0.0) {
         ifault = 3;
         goto endofproc;
     }
@@ -418,11 +417,9 @@ output:
         else if (truncation(utx, tausq) < .2 * acc1) {
             sigsq = sigsq + tausq;
             findu(&utx, .25 * acc1);
-            // trace[5] = sqrt(tausq);
             info->sd = sqrt(tausq);
         }
     }
-    // trace[4] = utx;
     info->truc = utx;
     acc1 = 0.5 * acc1;
 
@@ -464,8 +461,6 @@ l1:
         integrate(ntm, intv1, tausq, FALSE);
         xlim = xlim - xntm;
         sigsq = sigsq + tausq;
-        // trace[2] = trace[2] + 1;
-        // trace[1] = trace[1] + ntm + 1;
         info->nints = info->nints + 1;
         info->niterms = info->niterms + ntm + 1;
         /* find truncation point with new convergence factor */
@@ -484,12 +479,9 @@ l2:
     }
     nt = (int)floor(xnt + 0.5);
     integrate(nt, intv, 0.0, TRUE);
-    // trace[2] = trace[2] + 1;
-    // trace[1] = trace[1] + nt + 1;
     info->nints = info->nints + 1;
     info->niterms = info->niterms + nt + 1;
     qfval = 0.5 - intl;
-    // trace[0] = ersm;
     info->emag = ersm;
 
     /* test whether round-off error could be significant
@@ -503,7 +495,6 @@ l2:
 
 endofproc:
     free((char *)th);
-    // trace[6] = (double)count;
     info->ncycles = count;
     *result = qfval;
     return ifault;

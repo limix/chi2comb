@@ -13,7 +13,7 @@ void test_chi2comb(void) {
     double noncentrals[] = {1.3, 2.9};
     int dofs[] = {1, 3};
     int ncoefs = 2;
-    double coef1 = 0.41;
+    double gcoef = 0.41;
     double dof = 2.0;
     int lim = 1000;
     double abstol = 1e-16;
@@ -31,7 +31,7 @@ void test_chi2comb(void) {
                                         (int[2]){1, 3}, 2};
 
     // chi2comb_cdf(dof, chi2s);
-    fault = chi2comb_cdf(dof, &chi2s, &coef1, &lim, abstol, &info, &res);
+    fault = chi2comb_cdf(dof, &chi2s, gcoef, lim, abstol, &info, &res);
     res = 1 - res;
 
     TEST_CHECK(fabs(res - 0.9183206009070191) < EPSILON);
@@ -54,7 +54,7 @@ void test_chi2comb_table(void) {
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 6, 2, 6,
                             2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6,
                             2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2, 6, 2};
-    double coef1[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    double gcoef[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     double dof_eval[] = {1,   7,  20, 2,   20, 60,  10,  50,  120, 20, 100,
                          200, 10, 60, 150, 70, 160, 260, -40, 40,  140};
     int lim = 1000;
@@ -81,7 +81,7 @@ void test_chi2comb_table(void) {
         chi2s.dofs = dofs + offset;
         chi2s.ncents = noncentrals + offset;
         chi2s.n = ncoefs[i];
-        fault = chi2comb_cdf(dof_eval[i], &chi2s, coef1 + i, &lim, abstol, &info, &res);
+        fault = chi2comb_cdf(dof_eval[i], &chi2s, gcoef[i], lim, abstol, &info, &res);
         TEST_CHECK(fault == 0);
         TEST_CHECK(fabs(res - expected[i]) < EPSILON);
         offset += *(ncoefs + i);
