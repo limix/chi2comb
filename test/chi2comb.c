@@ -1,4 +1,4 @@
-#include "chi2comb.h"
+#include "chi2comb/chi2comb.h"
 #include "acutest.h"
 #include <float.h>
 #include <math.h>
@@ -7,12 +7,8 @@
 
 #define EPSILON 1e-12
 
-void test_chi2comb(void) {
+static void test_chi2comb(void) {
 
-    double coefs[] = {0.4, 1.1};
-    double noncentrals[] = {1.3, 2.9};
-    int dofs[] = {1, 3};
-    int ncoefs = 2;
     double gcoef = 0.41;
     double q = 2.0;
     int lim = 1000;
@@ -30,7 +26,7 @@ void test_chi2comb(void) {
     TEST_CHECK(fabs(res - 0.9183206009070191) < EPSILON);
 }
 
-void test_chi2comb_table(void) {
+static void test_chi2comb_table(void) {
 
     double coefs[] = {
         6, 3, 1, 6, 3, 1, 6, 3, 1, 6, 3, 1,  6,  3, 1, 6,  3,  1, 6, 3,  1,

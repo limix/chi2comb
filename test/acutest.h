@@ -356,85 +356,6 @@ void test_message__(const char *fmt, ...) {
         printf("    %s\n", line_beg);
 }
 
-static void test_list_names__(void) {
-    const struct test__ *test;
-
-    printf("Unit tests:\n");
-    for (test = &test_list__[0]; test->func != NULL; test++)
-        printf("  %s\n", test->name);
-}
-
-static void test_remember__(int i) {
-    if (test_flags__[i])
-        return;
-    else
-        test_flags__[i] = 1;
-
-    tests__[test_count__] = &test_list__[i];
-    test_count__++;
-}
-
-static int test_name_contains_word__(const char *name, const char *pattern) {
-    static const char word_delim[] = " \t-_.";
-    const char *substr;
-    size_t pattern_len;
-    int starts_on_word_boundary;
-    int ends_on_word_boundary;
-
-    pattern_len = strlen(pattern);
-
-    substr = strstr(name, pattern);
-    while (substr != NULL) {
-        starts_on_word_boundary =
-            (substr == name || strchr(word_delim, substr[-1]) != NULL);
-        ends_on_word_boundary = (substr[pattern_len] == '\0' ||
-                                 strchr(word_delim, substr[pattern_len]) != NULL);
-
-        if (starts_on_word_boundary && ends_on_word_boundary)
-            return 1;
-
-        substr = strstr(substr + 1, pattern);
-    }
-
-    return 0;
-}
-
-static int test_lookup__(const char *pattern) {
-    int i;
-    int n = 0;
-
-    /* Try exact match. */
-    for (i = 0; i < (int)test_list_size__; i++) {
-        if (strcmp(test_list__[i].name, pattern) == 0) {
-            test_remember__(i);
-            n++;
-            break;
-        }
-    }
-    if (n > 0)
-        return n;
-
-    /* Try word match. */
-    for (i = 0; i < (int)test_list_size__; i++) {
-        if (test_name_contains_word__(test_list__[i].name, pattern)) {
-            test_remember__(i);
-            n++;
-        }
-    }
-    if (n > 0)
-        return n;
-
-    /* Try relaxed match. */
-    for (i = 0; i < (int)test_list_size__; i++) {
-        if (strstr(test_list__[i].name, pattern) != NULL) {
-            test_remember__(i);
-            n++;
-        }
-    }
-
-    return n;
-}
-
 /* Call directly the given test unit function. */
 static int test_do_run__(const struct test__ *test) {
     test_current_unit__ = test;
@@ -705,7 +626,6 @@ static int test_is_tracer_present__(void) {
 
 int main(int argc, char **argv) {
     int i;
-    int seen_double_dash = 0;
 
     test_argv0__ = argv[0];
 

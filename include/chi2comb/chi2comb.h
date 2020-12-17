@@ -1,29 +1,21 @@
 #ifndef CHI2COMB_CHI2COMB_H
 #define CHI2COMB_CHI2COMB_H
 
-#define CHI2COMB_VERSION "0.0.3"
+#define CHI2COMB_VERSION "0.0.4"
 #define CHI2COMB_VERSION_MAJOR 0
 #define CHI2COMB_VERSION_MINOR 0
-#define CHI2COMB_VERSION_PATCH 3
+#define CHI2COMB_VERSION_PATCH 4
+
+#include "chi2comb/export.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#ifdef _WIN32
-#ifdef CHI2COMB_API_EXPORTS
-#define CHI2COMB_API __declspec(dllexport)
-#else
-#define CHI2COMB_API __declspec(dllimport)
-#endif
-#else
-#define CHI2COMB_API
-#endif
-
 struct chi2comb_chisquareds {
-    const double *coefs;  /* chi-squared coefficients */
-    const double *ncents; /* noncentrality parameters */
-    const int *dofs;      /* degree of freedoms */
+    double const *coefs;  /* chi-squared coefficients */
+    double const *ncents; /* noncentrality parameters */
+    int const *dofs;      /* degree of freedoms */
     int n;                /* number of terms */
 };
 
@@ -71,12 +63,12 @@ struct chi2comb_info {
  *     4: unable to locate integration parameters
  *     5: out of memory
  */
-CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef,
-                              int lim, double abstol, struct chi2comb_info *info,
-                              double *result);
+CHI2COMB_EXPORT int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s,
+                                 double gcoef, int lim, double abstol,
+                                 struct chi2comb_info *info, double *result);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* end of include guard: CHI2COMB_CHI2COMB_H */
+#endif

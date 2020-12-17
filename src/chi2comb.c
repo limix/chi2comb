@@ -1,6 +1,4 @@
-#define CHI2COMB_API_EXPORTS
-
-#include "chi2comb.h"
+#include "chi2comb/chi2comb.h"
 #include <float.h>
 #include <math.h>
 #include <setjmp.h>
@@ -298,9 +296,8 @@ void chi2comb_info_zeros(struct chi2comb_info *info) {
     info->truc = 0.0;
 }
 
-CHI2COMB_API int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef,
-                              int lim, double abstol, struct chi2comb_info *info,
-                              double *result)
+int chi2comb_cdf(double q, struct chi2comb_chisquareds *chi2s, double gcoef, int lim,
+                 double abstol, struct chi2comb_info *info, double *result)
 
 {
     int j, nj, nt, ntm, ifault;
